@@ -18,6 +18,6 @@ echo "Adding current user to the docker group..."
 sudo usermod -aG docker $USER
 
 echo "Docker Version:"
-docker version
+sudo docker version
 
 echo "Docker installation script completed."
