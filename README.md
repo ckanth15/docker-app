@@ -1,7 +1,5 @@
-# docker-app
+# Complete Docker Assignment Using Docker Compose
 
-Complete Docker Assignment Using Docker Compose
-Yes, absolutely! Docker Compose is actually better for multi-container applications. Let me provide the complete assignment using Docker Compose.
 Prerequisites
 
 EC2 instance running (Ubuntu 20.04 or later)
