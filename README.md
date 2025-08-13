@@ -9,27 +9,25 @@ SSH access to your EC2 instance
 Task 1: Environment Setup
 
 Connect to EC2 and install Docker:
-bashsudo apt update
+sudo apt update
 sudo apt install docker.io docker-compose -y
 sudo systemctl start docker
 sudo systemctl enable docker
 sudo usermod -aG docker $USER
 
 Log out and back in, then verify:
-bashdocker --version
+docker --version
 docker-compose --version
-
-
 
 Task 2: Create Project Structure
 
 Create project directory:
-bashmkdir docker-compose-assignment
+mkdir docker-compose-assignment
 cd docker-compose-assignment
 
 Create the web application files:
 Create web/index.html:
-bashmkdir web
+mkdir web
 cat > web/index.html << EOF
 <!DOCTYPE html>
 <html>
@@ -56,7 +54,7 @@ cat > web/index.html << EOF
 </html>
 EOF
 Create web/Dockerfile:
-bashcat > web/Dockerfile << EOF
+cat > web/Dockerfile << EOF
 FROM nginx:alpine
 
 # Add curl for health checks
@@ -76,7 +74,7 @@ EOF
 
 Task 3: Create Docker Compose File
 Create docker-compose.yml:
-bashcat > docker-compose.yml << EOF
+cat > docker-compose.yml << EOF
 version: '3.8'
 
 services:
@@ -124,13 +122,13 @@ EOF
 Task 4: Deploy the Application
 
 Start the application:
-bashdocker-compose up -d
+docker-compose up -d
 
 Check status:
-bashdocker-compose ps
+docker-compose ps
 
 View logs:
-bash# All services
+# All services
 docker-compose logs
 
 # Specific service
@@ -150,7 +148,7 @@ Should see your webpage with environment variables
 
 Task 5: Working with the Multi-Container App
 Test Redis Connectivity:
-bash# Connect to Redis container
+## Connect to Redis container
 docker-compose exec redis redis-cli
 
 # In Redis CLI, test data:
@@ -158,7 +156,7 @@ SET mykey "Hello from Docker Compose!"
 GET mykey
 exit
 Test Web Container:
-bash# Execute commands in web container
+## Execute commands in web container
 docker-compose exec web sh
 
 # Inside container:
@@ -168,16 +166,16 @@ exit
 Bonus Challenges with Docker Compose
 Challenge 1: Environment Variables (Already Implemented!)
 Check current environment variables:
-bashdocker-compose exec web env | grep APP
+docker-compose exec web env | grep APP
 Update environment variables:
-bash# Edit docker-compose.yml to change environment values
+# Edit docker-compose.yml to change environment values
 nano docker-compose.yml
 
 # Recreate containers with new environment
 docker-compose up -d --force-recreate
 Challenge 2: Volume Persistence (Already Implemented!)
 Test Redis data persistence:
-bash# Add data to Redis
+# Add data to Redis
 docker-compose exec redis redis-cli SET persistent-key "This data survives restarts"
 
 # Restart Redis service
@@ -186,16 +184,16 @@ docker-compose restart redis
 # Check if data persists
 docker-compose exec redis redis-cli GET persistent-key
 Inspect volume:
-bashdocker volume inspect docker-compose-assignment_redis-data
+docker volume inspect docker-compose-assignment_redis-data
 Challenge 3: Health Checks (Already Implemented!)
 Check health status:
-bashdocker-compose ps
+docker-compose ps
 View detailed health information:
-bashdocker inspect $(docker-compose ps -q web) | grep -A 20 Health
+docker inspect $(docker-compose ps -q web) | grep -A 20 Health
 docker inspect $(docker-compose ps -q redis) | grep -A 20 Health
 Challenge 4: Container Lifecycle Management
 All the lifecycle commands:
-bash# Stop all services
+# Stop all services
 docker-compose stop
 
 # Start stopped services
@@ -228,7 +226,7 @@ docker-compose up -d --build
 Advanced Docker Compose Features
 1. Development vs Production Configs
 Create docker-compose.override.yml (for development):
-bashcat > docker-compose.override.yml << EOF
+cat > docker-compose.override.yml << EOF
 version: '3.8'
 
 services:
@@ -246,7 +244,7 @@ services:
       - "6379:6379"  # Expose Redis port in dev
 EOF
 Create docker-compose.prod.yml (for production):
-bashcat > docker-compose.prod.yml << EOF
+cat > docker-compose.prod.yml << EOF
 version: '3.8'
 
 services:
@@ -260,7 +258,7 @@ services:
     restart: always
 EOF
 Use different configs:
-bash# Development mode
+# Development mode
 docker-compose up -d
 
 # Production mode
@@ -287,7 +285,7 @@ docker-compose-assignment/
     └── index.html
 
 Useful Docker Compose Commands Summary
-bash# Basic operations
+# Basic operations
 docker-compose up -d                    # Start in background
 docker-compose down                     # Stop and remove
 docker-compose restart                  # Restart all services
@@ -306,11 +304,11 @@ docker-compose top                      # Show running processes
 
 # Cleanup
 docker-compose down -v --rmi all       # Remove everything
-This Docker Compose approach is much cleaner and more professional than individual Docker commands. It's exactly how you'd manage applications in production!CKinstead of docker.io can we get the exact correct steps from docekr websiteAbsolutely! Let me provide the official Docker installation steps directly from Docker's documentation for Ubuntu on EC2.
+
 Official Docker Installation Steps for Ubuntu EC2
 Method 1: Install using the apt repository (Recommended)
 1. Set up Docker's apt repository
-bash# Add Docker's official GPG key:
+# Add Docker's official GPG key:
 sudo apt-get update
 sudo apt-get install ca-certificates curl
 sudo install -m 0755 -d /etc/apt/keyrings
@@ -324,11 +322,11 @@ echo \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
 2. Install Docker packages
-bashsudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 3. Verify installation
-bashsudo docker run hello-world
+sudo docker run hello-world
 4. Post-installation steps (Important!)
-bash# Create docker group (might already exist)
+# Create docker group (might already exist)
 sudo groupadd docker
 
 # Add your user to docker group
@@ -340,11 +338,11 @@ newgrp docker
 # Test without sudo
 docker run hello-world
 5. Enable Docker to start on boot
-bashsudo systemctl enable docker.service
+sudo systemctl enable docker.service
 sudo systemctl enable containerd.service
 
 Method 2: Install using convenience script (Alternative)
-bashcurl -fsSL https://get.docker.com -o get-docker.sh
+curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
 
 # Add user to docker group
@@ -354,9 +352,9 @@ newgrp docker
 Install Docker Compose
 Docker Compose is now included as a Docker plugin, but you can also install it separately:
 Option A: Use Docker Compose Plugin (Recommended - Already installed above)
-bashdocker compose version
+docker compose version
 Option B: Install Docker Compose separately
-bash# Download latest version
+# Download latest version
 sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 
 # Make it executable
@@ -367,7 +365,7 @@ docker-compose --version
 
 Verification Commands
 After installation, run these to verify everything is working:
-bash# Check Docker version
+# Check Docker version
 docker --version
 
 # Check Docker Compose version (plugin version)
@@ -392,7 +390,7 @@ docker compose (new plugin syntax)
 docker-compose (classic standalone syntax)
 
 Updated docker-compose.yml for the assignment:
-bashmkdir docker-compose-assignment
+mkdir docker-compose-assignment
 cd docker-compose-assignment
 
 # Create the directory structure
@@ -487,7 +485,7 @@ networks:
 EOF
 
 Run the Application with Official Docker
-bash# Using new Docker Compose plugin syntax
+# Using new Docker Compose plugin syntax
 docker compose up -d
 
 # Check status
